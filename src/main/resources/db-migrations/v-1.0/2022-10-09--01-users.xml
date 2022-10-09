@@ -10,6 +10,9 @@
                 <tableExists tableName="users"/>
             </not>
         </preConditions>
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
         <createTable tableName="users">
             <column defaultValueComputed="${uuid_function}" name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>

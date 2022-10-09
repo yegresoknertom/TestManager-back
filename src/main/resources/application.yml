@@ -1,42 +1,12 @@
-server:
-  port: 8080
-
-management:
-  server:
-    port: 8080
-
 spring:
-  application:
-    name: TestManager
-  #liquibase:
-  #  change-log: 'db-migrations/changelog.xml'
-  #  liquibase-schema: testusers
-  #  user: testuser_admin
-  #  password: testuser_admin
-
+  liquibase:
+    enabled: true
+    change-log: 'db-migrations/changelog.xml'
   datasource:
-    url: "jdbc:postgresql://localhost:5432/testusers"
+    url: "jdbc:postgresql://localhost:5432/testusers?currentSchema=testusers"
     username: testuser_admin
     password: testuser_admin
-    hikari:
-      auto-commit: false
-  liquibase:
-    change-log: "db-migrations/changelog.xml"
-    user: testuser_admin
-    password: testuser_admin
-    enabled: true
-
   jpa:
-    #database-platform: org.hibernate.dialect.PostgreSQL10Dialect
-    #hibernate:
-    #  ddl-auto: validate
-    #properties:
-    #  hibernate:
-    #    format_sql: true
-    #    jdbc:
-    #      log:
-    #        non_contextual_creation: true
-    #    connection:
-    #      provider_disables_autocommit: true
-    show-sql: true
-    3open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddl-auto: none
