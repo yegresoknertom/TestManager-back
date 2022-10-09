@@ -1,0 +1,40 @@
+# Default ignored files
+HELP.md
+.gradle
+build/
+gradle-wrapper.jar
+gradle/
+gradlew
+logs/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.bat
+out/
+.DS_Store
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Eclipse ###
+bin/**
+
+### VS Code ###
+.vscode/
+
