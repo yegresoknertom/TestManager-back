@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.testmanager.advice.TestManagerAdvice;
 import org.testmanager.model.ExceptionDTO;
+import org.testmanager.model.UserDTO;
 import org.testmanager.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +30,16 @@ class TestManagerAdviceTest {
         FreeUserNotFoundException freeUserNotFoundException = assertThrows(FreeUserNotFoundException.class, () -> userService.getFreeUser());
         ExceptionDTO exceptionDTO = testManagerAdvice.FreeUserNotFoundHandler(freeUserNotFoundException);
         assertEquals(exceptionDTO.getException(), FreeUserNotFoundException.class.getSimpleName());
+    }
+
+    @Test
+    public void testUserAlreadyExistsException() {
+        UserDTO user = new UserDTO().setLogin("user1").setPassword("Qwerty123");
+        when(userService.createUser(user)).thenThrow(UserAlreadyExistsException.class);
+
+        UserAlreadyExistsException userAlreadyExistsException = assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(user));
+        ExceptionDTO exceptionDTO = testManagerAdvice.UserAlreadyExistsHandler(userAlreadyExistsException);
+        assertEquals(exceptionDTO.getException(), UserAlreadyExistsException.class.getSimpleName());
     }
 
 }

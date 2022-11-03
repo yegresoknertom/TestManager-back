@@ -10,5 +10,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(value = "select * from users where locked is false limit 1", nativeQuery = true)
     Optional<User> findFreeUser();
+    Optional<User> findByLogin(String login);
 
 }
