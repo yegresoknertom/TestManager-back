@@ -1,7 +1,9 @@
 package org.testmanager.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +42,11 @@ public class UserController {
     @PutMapping("/users")
     UserDTO editUser(@Valid @RequestBody UserDTO userDTO) {
         return userService.editUser(userDTO);
+    }
+
+    @DeleteMapping("/users/{login}")
+    void deleteUser(@PathVariable String login) {
+        userService.deleteUser(login);
     }
 
 }

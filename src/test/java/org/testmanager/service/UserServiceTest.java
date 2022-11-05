@@ -18,6 +18,8 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -97,6 +99,17 @@ class UserServiceTest {
 
         assertTrue(userService.editUser(userDTO).getLogin() =="testLogin", "Logins do not match");
         assertTrue(userService.editUser(userDTO).getPassword() == "Qwerty123", "Passwords do not match");
+    }
+
+    @Test
+    void deleteUserTest() {
+        User user = new User();
+        user.setLogin("testLogin");
+        user.setPassword("Qwerty123");
+        when(userRepository.findByLogin(user.getLogin())).thenReturn(java.util.Optional.of(user));
+
+        userService.deleteUser("testLogin");
+        verify(userRepository, times(1)).delete(user);
     }
 
 }

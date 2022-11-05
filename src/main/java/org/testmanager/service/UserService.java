@@ -57,5 +57,11 @@ public class UserService {
         return userMapper.entityToDto(userRepository.save(dbUser));
     }
 
+    public void deleteUser(String login) {
+        log.info("delete user");
+        User dbUser = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException());
+        userRepository.delete(dbUser);
+    }
+
 
 }
