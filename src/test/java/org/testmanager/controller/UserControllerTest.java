@@ -14,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,6 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testmanager.exception.FreeUserNotFoundException;
 import org.testmanager.exception.UserAlreadyExistsException;
+import org.testmanager.exception.UserNotFoundException;
 import org.testmanager.model.ExceptionDTO;
 import org.testmanager.model.Pagination;
 import org.testmanager.model.UserDTO;
@@ -215,6 +217,40 @@ public class UserControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void  editUserTest() throws Exception {
+        UserDTO user = new UserDTO().setLogin("user1").setPassword("Qwerty123");
+        when(userService.editUser(user)).thenReturn(user);
+
+        mockMvc.perform(put("/users")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(user))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("login").value("user1"))
+                .andExpect(jsonPath("password").value("Qwerty123"));
+
+        verify(userService, times(1)).editUser(user);
+    }
+
+    @Test
+    public void editUserWhenUserNotFound_thenReturn404AndError() throws Exception {
+        UserDTO user = new UserDTO().setLogin("user1").setPassword("Qwerty123");
+        when(userService.editUser(user)).thenThrow(new UserNotFoundException());
+
+        MvcResult mvcResult = mockMvc.perform(put("/users")
+                        .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(user))
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        ExceptionDTO exceptionDTO = new ExceptionDTO("UserNotFoundException", "User not found");
+        String actualResponseBody = mvcResult.getResponse().getContentAsString();
+        String expectedResponseBody = objectMapper.writeValueAsString(exceptionDTO);
+        assertThat(actualResponseBody).isEqualToIgnoringWhitespace(expectedResponseBody);
     }
 
 }

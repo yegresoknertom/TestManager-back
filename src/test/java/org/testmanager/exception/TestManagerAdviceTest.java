@@ -24,12 +24,22 @@ class TestManagerAdviceTest {
     private TestManagerAdvice testManagerAdvice;
 
     @Test
-    public void testUserNotFoundException() {
+    public void testFreeUserNotFoundException() {
         when(userService.getFreeUser()).thenThrow(FreeUserNotFoundException.class);
 
         FreeUserNotFoundException freeUserNotFoundException = assertThrows(FreeUserNotFoundException.class, () -> userService.getFreeUser());
         ExceptionDTO exceptionDTO = testManagerAdvice.FreeUserNotFoundHandler(freeUserNotFoundException);
         assertEquals(exceptionDTO.getException(), FreeUserNotFoundException.class.getSimpleName());
+    }
+
+    @Test
+    public void testUserNotFoundException() {
+        UserDTO user = new UserDTO().setLogin("user1").setPassword("Qwerty123");
+        when(userService.editUser(user)).thenThrow(UserNotFoundException.class);
+
+        UserNotFoundException UserNotFoundException = assertThrows(UserNotFoundException.class, () -> userService.editUser(user));
+        ExceptionDTO exceptionDTO = testManagerAdvice.UserNotFoundHandler(UserNotFoundException);
+        assertEquals(exceptionDTO.getException(), UserNotFoundException.class.getSimpleName());
     }
 
     @Test

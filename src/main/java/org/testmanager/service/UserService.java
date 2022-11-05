@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.testmanager.exception.FreeUserNotFoundException;
 import org.testmanager.exception.UserAlreadyExistsException;
+import org.testmanager.exception.UserNotFoundException;
 import org.testmanager.mapper.UserMapper;
 import org.testmanager.model.Pagination;
 import org.testmanager.model.UserDTO;
@@ -14,6 +15,7 @@ import org.testmanager.model.UserListDTO;
 import org.testmanager.model.entity.User;
 import org.testmanager.repository.UserRepository;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,5 +49,13 @@ public class UserService {
         userListDTO.setPagination(new Pagination(resultPage.getNumber(), resultPage.getSize(), resultPage.getTotalPages(), resultPage.getTotalElements()));
         return userListDTO;
     }
+
+    public UserDTO editUser(UserDTO userDto) {
+        log.info("edit user");
+        User dbUser = userRepository.findByLogin(userDto.getLogin()).orElseThrow(() -> new UserNotFoundException());
+        dbUser.setPassword(userDto.getPassword());
+        return userMapper.entityToDto(userRepository.save(dbUser));
+    }
+
 
 }

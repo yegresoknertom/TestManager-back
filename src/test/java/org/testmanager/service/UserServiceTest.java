@@ -84,4 +84,19 @@ class UserServiceTest {
         assertTrue(userService.createUser(userDTO).getPassword() == "Qwerty123", "Passwords do not match");
     }
 
+    @Test
+    void editUserTest() {
+        User user = new User();
+        user.setLogin("testLogin");
+        user.setPassword("Qwerty123");
+        UserDTO userDTO = new UserDTO().setLogin("testLogin").setPassword("Qwerty123");
+        when(userMapper.entityToDto(user))
+                .thenReturn(userDTO);
+        when(userRepository.findByLogin(user.getLogin())).thenReturn(java.util.Optional.of(user));
+        when(userRepository.save(user)).thenReturn(user);
+
+        assertTrue(userService.editUser(userDTO).getLogin() =="testLogin", "Logins do not match");
+        assertTrue(userService.editUser(userDTO).getPassword() == "Qwerty123", "Passwords do not match");
+    }
+
 }
