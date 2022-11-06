@@ -39,13 +39,16 @@ class UserServiceTest {
         User user = new User();
         user.setLogin("testLogin");
         user.setPassword("Qwerty123");
-        UserDTO userDTO = new UserDTO().setLogin("testLogin").setPassword("Qwerty123");
+        UserDTO userDTO = new UserDTO().setLogin("testLogin").setPassword("Qwerty123").setLocked(true);
         when(userMapper.entityToDto(user))
                 .thenReturn(userDTO);
         when(userRepository.findFreeUser()).thenReturn(java.util.Optional.of(user));
 
-        assertTrue(userService.getFreeUser().getLogin() =="testLogin", "Logins do not match");
-        assertTrue(userService.getFreeUser().getPassword() == "Qwerty123", "Passwords do not match");
+        UserDTO freeUser = userService.getFreeUser();
+        assertTrue(freeUser.getLogin() =="testLogin", "Logins do not match");
+        assertTrue(freeUser.getPassword() == "Qwerty123", "Passwords do not match");
+        verify(userRepository, times(1)).save(user);
+        verify(userMapper, times(1)).entityToDto(user);
     }
 
     @Test
@@ -110,6 +113,19 @@ class UserServiceTest {
 
         userService.deleteUser("testLogin");
         verify(userRepository, times(1)).delete(user);
+    }
+
+    @Test
+    void unlockUserTest() {
+        User user = new User();
+        user.setLogin("testLogin");
+        user.setPassword("Qwerty123");
+        user.setLocked(true);
+        when(userRepository.findByLogin(user.getLogin())).thenReturn(java.util.Optional.of(user));
+
+        userService.unlockUser("testLogin");
+        verify(userRepository, times(1)).save(user);
+        assertTrue(!user.isLocked(), "User should be unlocked");
     }
 
 }

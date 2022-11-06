@@ -49,14 +49,15 @@ public class UserControllerTest {
 
     @Test
     public void  getFreeUserTest() throws Exception {
-        UserDTO user = new UserDTO().setLogin("user1").setPassword("Qwerty123");
+        UserDTO user = new UserDTO().setLogin("user1").setPassword("Qwerty123").setLocked(true);
         when(userService.getFreeUser()).thenReturn(user);
 
         mockMvc.perform(get("/users/freeuser"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("login").value("user1"))
-                .andExpect(jsonPath("password").value("Qwerty123"));
+                .andExpect(jsonPath("password").value("Qwerty123"))
+                .andExpect(jsonPath("locked").value(true));
 
         verify(userService, times(1)).getFreeUser();
     }
@@ -261,6 +262,15 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
 
         verify(userService, times(1)).deleteUser("login");
+    }
+
+    @Test
+    public void  unlockUserTest() throws Exception {
+        mockMvc.perform(put("/users/unlock/login"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(userService, times(1)).unlockUser("login");
     }
 
 }

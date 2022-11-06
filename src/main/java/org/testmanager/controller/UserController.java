@@ -49,4 +49,9 @@ public class UserController {
         userService.deleteUser(login);
     }
 
+    @PutMapping("/users/unlock/{login}")
+    void unlockUser(@PathVariable String login) {
+        userService.unlockUser(login);
+    }
+
 }

@@ -15,7 +15,6 @@ import org.testmanager.model.UserListDTO;
 import org.testmanager.model.entity.User;
 import org.testmanager.repository.UserRepository;
 
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +28,8 @@ public class UserService {
     public UserDTO getFreeUser() {
         log.info("getFreeUser");
         User dbUser = userRepository.findFreeUser().orElseThrow(() -> new FreeUserNotFoundException());
+        dbUser.setLocked(true);
+        userRepository.save(dbUser);
         return userMapper.entityToDto(dbUser);
     }
 
@@ -61,6 +62,13 @@ public class UserService {
         log.info("delete user");
         User dbUser = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException());
         userRepository.delete(dbUser);
+    }
+
+    public void unlockUser(String login) {
+        log.info("unlock user");
+        User dbUser = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException());
+        dbUser.setLocked(false);
+        userRepository.save(dbUser);
     }
 
 

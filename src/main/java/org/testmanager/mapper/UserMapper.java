@@ -9,7 +9,6 @@ import org.testmanager.model.entity.User;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "locked", ignore = true)
     User dtoToEntity(UserDTO userDTO);
 
     UserDTO entityToDto(User user);
